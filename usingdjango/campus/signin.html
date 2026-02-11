@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signin</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+        
+        <div class="container">
+
+<h2>Student Registration</h2>
+
+<input id="name" placeholder="Full Name">
+<input id="username" placeholder="Student Username">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="signup()">Create Account</button>
+
+<p>Already registered?
+<a href="login.html">Login</a>
+</p>
+
+</div>
+<script>
+function signup(){
+
+fetch("http://127.0.0.1:8000/signup/",{
+ method:"POST",
+ headers:{'Content-Type':'application/json'},
+ body:JSON.stringify({
+  roll: document.getElementById("username").value,
+  name: document.getElementById("name").value,
+  mail: document.getElementById("username").value + "@nitap.ac.in",
+  pswd: document.getElementById("password").value
+ })
+}).then(r=>r.json()).then(()=>{
+ alert("Registered Successfully");
+ location="login.html";
+});
+}
+</script>
+
+
+</body>
+</html>
