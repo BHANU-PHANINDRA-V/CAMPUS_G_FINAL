@@ -1,3 +1,4 @@
+<!----
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="index.css">
+
 </head>
 <body>
         
@@ -31,7 +33,8 @@ fetch("http://127.0.0.1:8000/login/",{
   roll: email.value,
   pswd: document.querySelector("input[type=password]").value
  })
-}).then(r=>r.json()).then(d=>{
+}).then(r=>r.json())
+.then(d=>{
  if(d.success){
    sessionStorage.setItem("roll",email.value);
    location="student.html";
@@ -42,6 +45,103 @@ fetch("http://127.0.0.1:8000/login/",{
 </script>
 
 
+
+</body>
+</html>
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h3 id="title">Student Login</h3>
+
+<button onclick="setRole('student')">Student</button>
+<button onclick="setRole('staff')">Staff</button>
+
+<input id="username" placeholder="Enter Roll Number">
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="loginUser()">Login</button>
+
+</div>
+
+<script>
+
+let currentRole = "student";
+
+function setRole(role){
+    currentRole = role;
+
+    if(role === "staff"){
+        document.getElementById("title").innerText = "Staff Login";
+        document.getElementById("username").placeholder = "Enter Employee ID";
+    } else {
+        document.getElementById("title").innerText = "Student Login";
+        document.getElementById("username").placeholder = "Enter Roll Number";
+    }
+}
+
+function loginUser(){
+
+let username = document.getElementById("username").value;
+let password = document.getElementById("password").value;
+
+if(currentRole === "student"){
+
+    fetch("http://127.0.0.1:8000/login/",{
+        method:"POST",
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+            roll: username,
+            pswd: password
+        })
+    })
+    .then(res => res.json())
+    .then(data=>{
+        if(data.success){
+            sessionStorage.setItem("roll", username);
+            sessionStorage.setItem("role", "student");
+            window.location="student.html";
+        } else {
+            alert("Invalid Student Credentials");
+        }
+    });
+
+}else{
+
+    fetch("http://127.0.0.1:8000/staff_login/",{
+        method:"POST",
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+            emp_id: username,
+            pswd: password
+        })
+    })
+    .then(res => res.json())
+    .then(data=>{
+        if(data.success){
+            sessionStorage.setItem("emp_id", username);
+            sessionStorage.setItem("role", "staff");
+            window.location="staff.html";
+        } else {
+            alert("Invalid Staff Credentials");
+        }
+    });
+
+}
+
+}
+
+</script>
 
 </body>
 </html>
