@@ -30,8 +30,6 @@
 <!--<script>loadStats()</script>--->
 <script>
 function loadStats() {
-    
-
 fetch("http://127.0.0.1:8000/complaint_stats/")
 .then(r=>r.json())
 .then(d=>{
@@ -39,6 +37,7 @@ fetch("http://127.0.0.1:8000/complaint_stats/")
  document.getElementById("solved").innerText = d.solved;
  document.getElementById("progress").innerText = d.progress;
     document.getElementById("pending").innerText = d.pending;
+    
 });}
 
 window.onload=loadStats;

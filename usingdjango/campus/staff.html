@@ -7,14 +7,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>staff</title>
    <link rel="stylesheet" href="index.css">
-
+    
 </head>
 <body>
        
         <div class="container">
 
 <h2>Staff Dashboard</h2>
-
+<input id="search" placeholder="Enter Complaint ID">
+<button onclick="searchComplaint()">Check Status</button>
+<div class="my_complaints">
+    <div class="box solved">
+       
+        <button onclick="viewComplaints('Solved')">Solved</button>
+    </div>
+    <div class="box inprogress">
+        
+        <button onclick="viewComplaints('In Progress')">In Progress</button>
+    </div>
+    <div class="box pending">
+       
+        <button onclick="viewComplaints('Pending')">Pending</button>
+    </div>
+</div>
 <div id="staffBox"></div>
 
 </div>
@@ -41,13 +56,63 @@ fetch("http://127.0.0.1:8000/staff_complaints/" + empId)
  });
 });
 
+function viewComplaints(status){
+    let box = document.getElementById("staffBox");
+    if(status === "Solved"){
+        box.innerHTML = "<h3>Solved Complaints</h3>";
+    } else if(status === "In Progress"){
+        box.innerHTML = "<h3>In Progress Complaints</h3>";
+    } else {
+        box.innerHTML = "<h3>Pending Complaints</h3>";
+    }
+    let sid = sessionStorage.getItem("roll");
+    fetch(`http://127.0.0.1:8000/student_complaints/${sid}/${status}/`)
+    .then(response => response.json())
+    .then(data => {
+        data.forEach(c => {
+            box.innerHTML += `
+            <div class="block">
+                <h3>${c.title}</h3>
+                <p>Status: ${c.status}</p>
+            </div>`;
+        });
+    });
+}
 function update(id,status){
 fetch("http://127.0.0.1:8000/update_status/",{
  method:"POST",
  headers:{'Content-Type':'application/json'},
  body:JSON.stringify({id:id,status:status})
 })
-.then(()=>location.reload());
+//.then(()=>location.reload());
+.then(data=>{
+  alert("complaint: "+id+": "+status)
+})
+}
+function searchComplaint(){
+
+    let cid = document.getElementById("search").value;
+
+    if(cid === ""){
+        alert("Please enter Complaint ID");
+        return;
+    }
+
+    fetch(`http://127.0.0.1:8000/search_complaint/${cid}/`)
+    .then(response => response.json())
+    .then(data => {
+
+        if(data.found){
+            alert("Complaint Status: " + data.status);
+        }else{
+            alert("Complaint Not Found");
+        }
+
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Server Error");
+    });
 }
 </script>
 

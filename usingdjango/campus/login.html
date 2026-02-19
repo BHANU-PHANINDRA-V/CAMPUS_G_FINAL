@@ -62,15 +62,21 @@ fetch("http://127.0.0.1:8000/login/",{
 
 <div class="container">
 
-<h3 id="title">Student Login</h3>
+<h2 id="title">Student Login</h2>
 
-<button onclick="setRole('student')">Student</button>
-<button onclick="setRole('staff')">Staff</button>
+<div class="role-buttons">
+    <button onclick="setRole('student')">Student</button>
+    <button onclick="setRole('staff')">Staff</button>
+</div>
 
 <input id="username" placeholder="Enter Roll Number">
 <input type="password" id="password" placeholder="Password">
 
 <button onclick="loginUser()">Login</button>
+
+<p>Don't have an account?
+<a href="signin.html">Sign Up</a>
+</p>
 
 </div>
 
@@ -105,7 +111,12 @@ if(currentRole === "student"){
             pswd: password
         })
     })
-    .then(res => res.json())
+    .then(res => {
+        if(!res.ok){
+            throw new Error("Server Error: " + res.status);
+        }
+        return res.json();
+    })
     .then(data=>{
         if(data.success){
             sessionStorage.setItem("roll", username);
@@ -114,6 +125,10 @@ if(currentRole === "student"){
         } else {
             alert("Invalid Student Credentials");
         }
+    })
+    .catch(err=>{
+        console.error(err);
+        alert("Login failed");
     });
 
 }else{
@@ -126,7 +141,12 @@ if(currentRole === "student"){
             pswd: password
         })
     })
-    .then(res => res.json())
+    .then(res => {
+        if(!res.ok){
+            throw new Error("Server Error: " + res.status);
+        }
+        return res.json();
+    })
     .then(data=>{
         if(data.success){
             sessionStorage.setItem("emp_id", username);
@@ -135,6 +155,10 @@ if(currentRole === "student"){
         } else {
             alert("Invalid Staff Credentials");
         }
+    })
+    .catch(err=>{
+        console.error(err);
+        alert("Login failed");
     });
 
 }
@@ -145,3 +169,4 @@ if(currentRole === "student"){
 
 </body>
 </html>
+
